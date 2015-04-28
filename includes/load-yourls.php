@@ -5,7 +5,7 @@
 $access_key = isset($_SERVER['AWS_ACCESS_KEY_ID']) ? $_SERVER['AWS_ACCESS_KEY_ID'] : '';
 $secret_key = isset($_SERVER['AWS_SECRET_KEY']) ? $_SERVER['AWS_SECRET_KEY'] : '';
 $bucket_name = isset($_SERVER['PARAM1']) ? $_SERVER['PARAM1'] : '';
-$bucket_file = isset($_SERVER['yourls.config.file']) ? $_SERVER['yourls.config.file'] : '';
+$bucket_file = isset($_SERVER['YOURLS_CONFIG_FILE']) ? $_SERVER['YOURLS_CONFIG_FILE'] : '';
 
 if ($access_key && $secret_key && $bucket_name) {
     require_once './aws-autoloader.php';
