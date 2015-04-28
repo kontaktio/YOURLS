@@ -2,6 +2,27 @@
 // This file initialize everything needed for YOURLS
 
 // Include settings
+$access_key = isset($_SERVER['AWS_ACCESS_KEY_ID']) ? $_SERVER['AWS_ACCESS_KEY_ID'] : '';
+$secret_key = isset($_SERVER['AWS_SECRET_KEY']) ? $_SERVER['AWS_SECRET_KEY'] : '';
+$bucket_name = isset($_SERVER['PARAM1']) ? $_SERVER['PARAM1'] : '';
+$bucket_file = isset($_SERVER['yourls.config.file']) ? $_SERVER['yourls.config.file'] : '';
+
+if ($access_key && $secret_key && $bucket_name) {
+    require_once './aws-autoloader.php';
+
+    $s3Client = Aws\S3\S3Client::factory(array(
+        'key' => $access_key,
+        'secret' => $secret_key
+    ));
+    $remote_config = $s3Client->getObject(array(
+        'Bucket' => $bucket_name,
+        'Key' => $bucket_file
+    ));
+
+    file_put_contents(dirname( dirname( __FILE__ ) ) . '/user/config.php', (string) $remote_config['Body']);
+    chmod(dirname( dirname( __FILE__ ) ) . '/user/config.php', 0664);
+}
+
 if( file_exists( dirname( dirname( __FILE__ ) ) . '/user/config.php' ) ) {
 	// config.php in /user/
 	define( 'YOURLS_CONFIGFILE', str_replace( '\\', '/', dirname( dirname( __FILE__ ) ) ) . '/user/config.php' );
